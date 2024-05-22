@@ -6,8 +6,8 @@ import re
 
 category='ai'
 first_layer = 'Natural language processing'
-second_layer = 'Language resources'
-third_layer = 'null'
+second_layer = 'Knowledge representation and reasoning'
+third_layer = 'Probabilistic reasoning'
 
 def attach_to_csv(item, csv_string):
     if item is not None:
@@ -41,7 +41,7 @@ def download_pdf(doi, title):
             return file_name
 
 def create_pdf_file(title, pdf):
-    directory = 'papers/Language_resources'
+    directory = 'papers/Probabilistic_reasoning'
     if not os.path.exists(directory):
         os.makedirs(directory)
 
@@ -121,7 +121,7 @@ for doi in dois:
         csv_string = attach_to_csv(abstract, csv_string)
         csv_string = csv_string[:-1]
         
-        file = open('papers/dataset.csv', 'a', encoding='utf-8')
+        file = open('papers/Probabilistic_reasoning.csv', 'a', encoding='utf-8')
         file.write(csv_string + '\n')
         file.close()
         downloadedFiles+=1
