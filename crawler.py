@@ -5,9 +5,9 @@ import os
 import re
 
 category='ai'
-first_layer = 'Natural language processing'
-second_layer = 'Knowledge representation and reasoning'
-third_layer = 'Probabilistic reasoning'
+first_layer = 'Computer vision'
+second_layer = 'Computer vision problems'
+third_layer = 'Shape inference'
 
 def attach_to_csv(item, csv_string):
     if item is not None:
@@ -41,17 +41,36 @@ def download_pdf(doi, title):
             return file_name
 
 def create_pdf_file(title, pdf):
-    directory = 'papers/Probabilistic_reasoning'
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+  directory = 'papers/Shape inference'
+  if not os.path.exists(directory):
+    os.makedirs(directory)
 
-    # Replace special characters with '_' in the title
-    file_name = re.sub(r'[\\/*?:"<>|\'‘’]', '_', title.strip()) + '.pdf'
-    file_path = os.path.join(directory, file_name)
-    
+  # Replace special characters with '_' in the title
+  file_name = re.sub(r'[\\/*?:"<>|\'‘’]', '_', title.strip()) + '.pdf'
+  file_path = os.path.join(directory, file_name)
+
+  # Check if PDF size is greater than 40KB
+  if len(pdf.content) > 50 * 1024:  # convert KB to bytes (1 KB = 1024 bytes)
     open(file_path, 'wb').write(pdf.content)
-    print('PDF downloaded')
+    print('PDF downloaded (size exceeds 50KB)')
     return file_name
+  else:
+    print('PDF not downloaded (size less than or equal to 50KB)')
+    print('----------------------------------------------------')
+    return None
+
+# def create_pdf_file(title, pdf):
+#     directory = 'papers/Shape inference'
+#     if not os.path.exists(directory):
+#         os.makedirs(directory)
+
+#     # Replace special characters with '_' in the title
+#     file_name = re.sub(r'[\\/*?:"<>|\'‘’]', '_', title.strip()) + '.pdf'
+#     file_path = os.path.join(directory, file_name)
+    
+#     open(file_path, 'wb').write(pdf.content)
+#     print('PDF downloaded')
+#     return file_name
 
 def crawl_dois(url):
 
@@ -121,7 +140,7 @@ for doi in dois:
         csv_string = attach_to_csv(abstract, csv_string)
         csv_string = csv_string[:-1]
         
-        file = open('papers/Probabilistic_reasoning.csv', 'a', encoding='utf-8')
+        file = open('papers/Shape inference.csv', 'a', encoding='utf-8')
         file.write(csv_string + '\n')
         file.close()
         downloadedFiles+=1
