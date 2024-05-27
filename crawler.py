@@ -34,6 +34,10 @@ def download_pdf(doi, title):
             return None
         else:
             pdf_link = soup.find('button')
+            if pdf_link is None:
+                print('PDF link not found on Sci-Hub page')
+                print('----------------------------------------------------')
+                return None
             download_link = pdf_link['onclick'].replace('location.href=\'', '')
             pdf = requests.get('https://sci-hub.se/' + download_link)
             #create_pdf_file(title, pdf)
@@ -58,19 +62,6 @@ def create_pdf_file(title, pdf):
     print('PDF not downloaded (size less than or equal to 50KB)')
     print('----------------------------------------------------')
     return None
-
-# def create_pdf_file(title, pdf):
-#     directory = 'papers/Shape inference'
-#     if not os.path.exists(directory):
-#         os.makedirs(directory)
-
-#     # Replace special characters with '_' in the title
-#     file_name = re.sub(r'[\\/*?:"<>|\'‘’]', '_', title.strip()) + '.pdf'
-#     file_path = os.path.join(directory, file_name)
-    
-#     open(file_path, 'wb').write(pdf.content)
-#     print('PDF downloaded')
-#     return file_name
 
 def crawl_dois(url):
 
