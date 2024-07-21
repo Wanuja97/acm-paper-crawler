@@ -4,10 +4,10 @@ import requests
 import os
 import re
 
-category='ai'
-first_layer = 'Planning and scheduling'
-second_layer = 'Robotic planning - Evolutionary robotics'
-third_layer = 'null'
+category='category_name'
+first_layer = 'first_layer_name'
+second_layer = 'second_layer_name'
+third_layer = 'third_layer_name'
 
 def attach_to_csv(item, csv_string):
     if item is not None:
@@ -19,17 +19,15 @@ def download_pdf(doi, title):
     pdf = requests.get('https://dl.acm.org/doi/pdf/' + doi, allow_redirects=True)
     
     if pdf.headers.get('Content-Type').startswith('application/pdf'):
-        #file_name = "\"" + title.strip() + '.pdf' + "\""
         print('PDF found in ACM Digital Library')
         file_name = create_pdf_file(title, pdf)
         return file_name
     else:
-        print('PDF not found in ACM Digital Library, trying Sci-Hub...')
-        sci_hub_page = requests.get('https://sci-hub.se/' + doi)
-        soup = BeautifulSoup(sci_hub_page.content, 'html.parser')
-        sci_hub_page_title = soup.find('title')
-        if sci_hub_page_title.text == 'Sci-Hub: article not found':
-            print('PDF not found in Sci-Hub')
+        page = requests.get('url' + doi)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        page_title = soup.find('title')
+        if page_title.text == 'article not found':
+            print('PDF not found')
             print('----------------------------------------------------')
             return None
         else:
@@ -37,18 +35,17 @@ def download_pdf(doi, title):
             if pdf_link is None:
                 pdf_link = soup.find('button', text='↓ save')
                 if pdf is None:
-                    print('PDF link not found on Sci-Hub page')
+                    print('PDF link not found')
                     print('----------------------------------------------------')
                     return None
 
             download_link = pdf_link['onclick'].replace('location.href=\'', '')
-            pdf = requests.get('https://sci-hub.se/' + download_link)
-            #create_pdf_file(title, pdf)
+            pdf = requests.get('url' + download_link)
             file_name = create_pdf_file(title, pdf)
             return file_name
 
 def create_pdf_file(title, pdf):
-  directory = 'papers/Robotic planning - Evolutionary robotics'
+  directory = 'downloading_directory'
   if not os.path.exists(directory):
     os.makedirs(directory)
 
@@ -134,7 +131,7 @@ for doi in dois:
         csv_string = attach_to_csv(abstract, csv_string)
         csv_string = csv_string[:-1]
         
-        file = open('papers/Robotic planning - Evolutionary robotics.csv', 'a', encoding='utf-8')
+        file = open('paper_directory', 'a', encoding='utf-8')
         file.write(csv_string + '\n')
         file.close()
         downloadedFiles+=1
